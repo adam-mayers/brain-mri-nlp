@@ -1,0 +1,96 @@
+title: "MRI BRAIN NLP"
+description: "NLP model for span categorisation of brain MRI reports for patients from memory clinic"
+# Variables can be referenced across the project.yml using ${vars.var_name}
+vars:
+  name: "mri_brain_nlp"
+  # Supported languages:
+  lang: "en"
+  # Set your GPU ID, -1 is CPU
+  gpu_id: -1
+  version: "0.0.0"
+  train: "train.spacy"
+  dev: "test.spacy"
+  config: "config.cfg"
+  # for k-fold cross validation
+  seed: 42
+  n_folds: 5
+
+# These are the directories that the project needs. The project CLI will make
+# sure that they always exist.
+directories: ["corpus", "configs", "training", "scripts", "packages"]
+
+# Workflows are sequences of commands (see below) executed in order. You can
+# run them via "spacy project run [workflow]". If a commands's inputs/outputs
+# haven't changed, it won't be re-run.
+workflows:
+  all:
+    - train
+    - evaluate
+    - package
+
+# Project commands, specified in a style similar to CI config files (e.g. Azure
+# pipelines). The name is the command name that lets you trigger the command
+# via "spacy project run [command] [path]". The help message is optional and
+# shown when executing "spacy project run [optional command] [path] --help".
+
+commands:
+  - name: "train"
+    help: "Train the spancat model"
+    script:
+      - "python -m spacy train --verbose configs/${vars.config} --output training/ --paths.train corpus/train.spacy --paths.dev corpus/test.spacy --nlp.lang ${vars.lang} --gpu-id ${vars.gpu_id} --code ./scripts/functions.py"
+    deps:
+      - "configs/${vars.config}"
+      - "corpus/train.spacy"
+      - "corpus/test.spacy"
+    outputs:
+      - "training/model-best"
+
+  - name: "evaluate"
+    help: "Evaluate the model and export performance metrics"
+    script:
+      - "python -m spacy evaluate training/model-best corpus/test.spacy --output training/metrics.json"
+    deps:
+      - "corpus/test.spacy"
+      - "training/model-best"
+    outputs:
+      - "training/metrics.json"
+
+  - name: "package"
+    help: "Package the trained model as a pip package"
+    script:
+      - "python -m spacy package training/model-best packages --name ${vars.name} --version ${vars.version} --force"
+    deps:
+      - "training/model-best"
+    outputs_no_cache:
+      - "packages/${vars.lang}_${vars.name}-${vars.version}/dist/${vars.lang}_${vars.name}-${vars.version}.tar.gz"
+
+  - name: "visualize-model"
+    help: "Visualize the model's output interactively using Streamlit"
+    script:
+      - "python3 -m streamlit run scripts/visualize_model.py"
+    deps:
+      - "scripts/visualize_model.py"
+      - "training/model-best"
+       
+  - name: "evaluate-kfold"
+    help: "Evaluate using k-fold cross validation - set number of folds in project.yml"
+    script:
+      - "python -m scripts.kfold corpus/train.spacy configs/config.cfg --output-path metrics/kfold.json --n-folds ${vars.n_folds} --use-gpu ${vars.gpu_id}" 
+    deps:
+      - "corpus/train.spacy"
+      - "configs/config.cfg"
+      - "scripts/kfold.py"
+    outputs:
+      - "metrics/kfold.json"
+      
+  - name: "find-threshold"
+    help: "Runs a series of trials across threshold values from 0.0 to 1.0 and identifies the best threshold for the provided score metric."
+    script:
+      - "python -m spacy find-threshold training/model-best corpus/train.spacy spancat threshold spans_sc_f --n_trials 21" 
+    deps:
+      - "corpus/train.spacy"
+      - "configs/config.cfg"
+      - "training/model-best"
+    outputs:
+      - "metrics/find_threshold.json"
+
