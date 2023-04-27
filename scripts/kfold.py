@@ -2,12 +2,11 @@
 The majority of this code is the kfold.py script from from github project: 
 https://github.com/ljvmiranda921/ud-tagalog-spacy
 
-This has since been updated to output all of the metrics for each fold to a jsonl, not just the average of the top-level precision/recall/f-score.
-This is useful if wanting to assess performance on a per-category basis, and wanting to see data for each fold
+This has been updated to output all of the metrics for each span category for each fold to ./metrics/kfold.jsonl (once all folds are completed), not just the average of the top-level precision/recall/f-score. This is useful if wanting to assess performance on a per-fold, per-category basis.
 
-Also added further information at the end of each fold to output the appended metrics and add a timestamp
+Also added further information at the end of each fold to output the appended metrics and add a timestamp. 
 
-Further updated to interact with wandb
+Also added wandb (weights & biases) integration, although this only outputs the final scores for each fold and does not do the dynamic tracking while each fold is training. However, this is not really required and is still useful for running experiments / hyperparamter tuning.
 
 """
 
@@ -121,7 +120,6 @@ def main(
             with show_validation_error(config_path, hint_fill=False):
                 config = load_config(config_path, overrides, interpolate=False)
                 nlp = init_nlp(config)
-
            
             ##Initialise the wandb run, saving the spacy config
             wandb.init(project="wandb_MRI_NLP", config=config)
