@@ -151,7 +151,7 @@ def main(
     examples = [Example(nlp(doc.text), doc) for doc in docs]
     label_list=labels.split(",")
     
-    confusion_matrix(examples, nlp, label_list, per_label=True)
+    confusion_matrix(examples, nlp, label_list, per_label)
 
 if __name__ == "__main__":
     app()

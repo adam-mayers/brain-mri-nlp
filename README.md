@@ -1,5 +1,6 @@
 # brain-mri-nlp
 This repository contains a project files, scripts and configs written during the development of a spaCy span categorisation NLP project for the automated extraction of mentions of volumetric assessment from brain MRI reports in a memory clinic context.
+This includes scripts and project.yml options for custom visualisation using adapted spacy-streamlit, kfold cross-validation with per-label performance, and directly calculated precision and recall with confidence intervals (including on a per-label basis)
 
 ## project.yml
 
@@ -15,10 +16,15 @@ The following new commands are defined within the project.yml project file. They
   - Example output (NB: not real patient data!):
   - ![streamlit screenshot](streamlit_output.PNG)
 - `evaluate-kfold`
-  - Evaluate using k-fold cross validation, with the number of folds in project.yml. This is heavily based on [this GitHub project](https://github.com/ljvmiranda921/ud-tagalog-spacy).
+  - Evaluate using k-fold cross validation, with the number of folds set in project.yml. This is heavily based on [this GitHub project](https://github.com/ljvmiranda921/ud-tagalog-spacy).
   - This has been updated to output all of the metrics for each span category for each fold to ./metrics/kfold.jsonl (once all folds are completed), not just the average of the top-level precision/recall/f-score. This is useful if wanting to assess performance on a per-fold and/or per-category basis.
   - Also added further information at the end of each fold to output the appended metrics and add a timestamp (this is useful for debugging and sanity checking in situations where running the full number of folds may take a non-trivial amount of time).
-  - Also added wandb (weights & biases) integration, although this only outputs the final scores for each fold and does not do the dynamic tracking while each fold is training. However, this is not really required and is still useful for running experiments / hyperparamter tuning.
+  - Also added wandb (weights & biases) integration, although this only outputs the final scores for each fold and does not do the dynamic tracking while each fold is training. However, this is not really required and is still useful for running experiments / hyperparameter tuning.
+- `confidence`
+  - Output the confusion matrix and calculate the precision and recall with 95% confidence intervals.
+  - See the project.yml afor example of command line usage. Arguments needed are the test data, the spacy config file, the model, the per-label boolean and then a comma-separated string of labels.
+  - This will output to stdout each of true positive, false positive, false negative, true negative, and both precision and recall (with 95% confidence interval in brackets) 
+  - If only overall performance is required then please change the --per-label option in the project.yml (or at the command line if running directly) to False.
 - `find-threshold`
   - This adds the new spacy find-threshold CLI command to the project, purely to ensure consistent usage.
   

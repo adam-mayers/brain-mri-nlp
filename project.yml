@@ -88,7 +88,7 @@ commands:
   - name: "confidence"
     help: "Evaluate model performance against prior annotations"
     script:
-      - "python -m scripts.confidence corpus/test.spacy configs/config.cfg training/model-best --labels ${vars.labels} " 
+      - "python -m scripts.confidence corpus/test.spacy configs/config.cfg training/model-best --per-label True --labels ${vars.labels} " 
     deps:
       - "corpus/train.spacy"
       - "configs/config.cfg"
