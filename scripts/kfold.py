@@ -6,7 +6,7 @@ This has been updated to output all of the metrics for each span category for ea
 
 Also added further information at the end of each fold to output the appended metrics and add a timestamp. 
 
-Also added wandb (weights & biases) integration, although this only outputs the final scores for each fold and does not do the dynamic tracking while each fold is training. However, this is not really required and is still useful for running experiments / hyperparamter tuning.
+Also added wandb (weights & biases) integration, although this only outputs the final scores for each fold and does not do the dynamic tracking while each fold is training. However, this is not really required and is still useful for running experiments / hyperparameter tuning.
 
 """
 
@@ -49,7 +49,6 @@ def flatten(l: List) -> List:
 
 
 app = typer.Typer()
-
 
 @app.command(
     context_settings={"allow_extra_args": True, "ignore_unknown_options": True}
