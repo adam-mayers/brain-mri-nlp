@@ -22,7 +22,7 @@ The following new commands are defined within the project.yml project file. They
   - Also added wandb (weights & biases) integration, although this only outputs the final scores for each fold and does not do the dynamic tracking while each fold is training. However, this is not really required and is still useful for running experiments / hyperparameter tuning.
 - `confidence`
   - Output the confusion matrix and calculate the precision and recall with 95% confidence intervals.
-  - See the project.yml afor example of command line usage. Arguments needed are the test data, the spacy config file, the model, the per-label boolean and then a comma-separated string of labels.
+  - See the project.yml for an example of command line usage. Arguments needed are the test data, the spacy config file, the model, the per-label boolean and then a comma-separated string of labels.
   - This will output to stdout each of true positive, false positive, false negative, true negative, and both precision and recall (with 95% confidence interval in brackets) 
   - If only overall performance is required then please change the --per-label option in the project.yml (or at the command line if running directly) to False.
 - 'agreement'
