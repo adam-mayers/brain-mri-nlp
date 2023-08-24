@@ -25,6 +25,10 @@ The following new commands are defined within the project.yml project file. They
   - See the project.yml afor example of command line usage. Arguments needed are the test data, the spacy config file, the model, the per-label boolean and then a comma-separated string of labels.
   - This will output to stdout each of true positive, false positive, false negative, true negative, and both precision and recall (with 95% confidence interval in brackets) 
   - If only overall performance is required then please change the --per-label option in the project.yml (or at the command line if running directly) to False.
+- 'agreement'
+  - Evaluates inter-annotator agreement for dual annotations, assuming one annotator is 'gold standard' and the other annotator is the 'model'. Outputs to the command line the precision, recall and F1 score with confidence intervals, for both standard matching (i.e. exact match of boundaries for a given span) and relaxed matching (allows overlap but does not require the start/end boundaries to be identical). Takes dual.json as the input, and the script which was used to generate this file is provided as dual.py.
+- 'dual-annotations'
+  - This simply runs dual.py to generate the JSON containing the dual annotations. This is not currently implemented for direct CLI usage and the variables for this need to be changed in the dual.py file directly.
 - `find-threshold`
   - This adds the new spacy find-threshold CLI command to the project, purely to ensure consistent usage.
   
@@ -32,6 +36,8 @@ The following new commands are defined within the project.yml project file. They
 
 - [visualize-model.py](/scripts/visualize-model.py)
 - [kfold.py](/scripts/kfold.py)
+- [agreement.py](/scripts/agreement.py)
+- [dual.py](/scripts/dual.py)
 - [functions.py](/scripts/functions.py)
   - Added for the purposes of defining a custom logging function (which here is simply spaCy's wandb_logger_v5) for usage with the kfold evaluation, ultimately not needed but included for completeness
 
