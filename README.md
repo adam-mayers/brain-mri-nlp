@@ -36,6 +36,7 @@ The following new commands are defined within the project.yml project file. They
 
 - [visualize-model.py](/scripts/visualize-model.py)
 - [kfold.py](/scripts/kfold.py)
+- [confidence.py](/scripts/confidence.py)
 - [agreement.py](/scripts/agreement.py)
 - [dual.py](/scripts/dual.py)
 - [functions.py](/scripts/functions.py)
