@@ -1,5 +1,7 @@
 """
-This is the code for extracting the annotations from the prodigy database, for the default session, and also for a specific named session_id (in this case the second annotator)
+This is the code for extracting the annotations from the prodigy database.
+
+This assumes that the initial annotation was under the default session, and the second annotation was under a specific named session_id
 
 v1.0 - 31/07/23 - First working version
 v1.1 - 23/08/23 - Extracted this code from agreement.py to be able to run separately
@@ -12,7 +14,7 @@ from prodigy.components.db import connect
 labels = ["HVL","NO_HVL","RVL","NO_RVL","GVL","NO_GVL"]
 db = connect()
 dataset = "FINAL_MRI_NLP"
-session = 'FINAL_MRI_NLP-cbooth'
+session = 'FINAL_MRI_NLP-SESSIONID'
 
 annotations = db.get_dataset_examples(dataset)
 inputhashes = db.get_input_hashes(dataset)
@@ -37,5 +39,5 @@ for input_hash in dual_annotation_hashes:
             
 
 #To write out to a JSON
-with open("dual_test.json", 'w') as f:
+with open("dual.json", 'w') as f:
     f.write(json.dumps(annotation_dict))
