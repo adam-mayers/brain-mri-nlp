@@ -7,14 +7,14 @@ vars:
   lang: "en"
   # Set your GPU ID, -1 is CPU
   gpu_id: -1
-  version: "0.0.0"
+  version: "1.0.0"
   train: "train.spacy"
   dev: "test.spacy"
   config: "config.cfg"
   # for k-fold cross validation
   seed: 42
   n_folds: 5
-  # for confidence intervals, provide spancat labels, separated by spaces
+  # for confidence intervals, provide spancat labels, separated by commas only
   labels: "HVL,NO_HVL,RVL,NO_RVL,GVL,NO_GVL"
 
 # These are the directories that the project needs. The project CLI will make
@@ -85,17 +85,6 @@ commands:
     outputs:
       - "metrics/kfold.json"
 
-  - name: "confidence"
-    help: "Evaluate model performance against prior annotations"
-    script:
-      - "python -m scripts.confidence corpus/test.spacy configs/config.cfg training/model-best --per-label True --labels ${vars.labels} " 
-    deps:
-      - "corpus/train.spacy"
-      - "configs/config.cfg"
-      - "scripts/kfold.py"
-    outputs:
-      - "metrics/kfold.json"
-
   - name: "find-threshold"
     help: "Runs a series of trials across threshold values from 0.0 to 1.0 and identifies the best threshold for the provided score metric."
     script:
@@ -107,3 +96,26 @@ commands:
     outputs:
       - "metrics/find_threshold.json"
 
+  - name: "confidence"
+    help: "Evaluate model performance against prior annotations"
+    script:
+      - "python -m scripts.confidence corpus/test.spacy configs/config.cfg training/model-best --per-label True --labels ${vars.labels} " 
+    deps:
+      - "corpus/train.spacy"
+      
+  - name: "dual-annotations"
+    help: "Generate a JSON that contains all of the dual annotated inputs"
+    script:
+      - "python -m scripts.dual" 
+    deps:
+      - "configs/config.cfg"
+    outputs:
+      - "dual.json"
+
+  - name: "agreement"
+    help: "Evaluate inter-annotator agreement, assuming one annotator is gold standard. Returns precision/recall/F1 score for both exact matches and also a relaxed version where there is an overlap with the same label but the token boundaries are not identical"
+    script:
+      - "python -m scripts.agreement scripts/dual.json brain_mri_nlp FINAL_MRI_NLP-cbooth" 
+    deps:
+      - "configs/config.cfg"
+   
