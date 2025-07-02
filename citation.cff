@@ -1,11 +1,11 @@
-cff-version: 1.0
+cff-version: 1.0.0
 message: "If you use this software, please cite it as below."
 authors:
 - family-names: "Mayers"
   given-names: "Adam"
   orcid: "https://orcid.org/0009-0008-1948-657X"
 title: "Brain MRI NLP"
-version: 1.0
+version: 1.0.0
 doi: 10.5281/zenodo.15790492
 date-released: 2025-07-02
 url: "https://github.com/adam-mayers/brain-mri-nlp"
